@@ -1,6 +1,7 @@
 # Cationic cell-penetrating peptide uptake and trafficking
 
-This repository contains the analysis code and source data associated with the manuscript **“[Insert manuscript title]”** (citation and DOI pending).
+This repository contains the analysis code and source data associated with the manuscript **“Lipoproteins modulate the uptake and biological function of cationic cell-penetrating peptides across the animal lineage.[
+”** (citation and DOI pending).
 
 This study investigates how natural cationic cell-penetrating peptides (+CPPs) interact with extracellular lipoproteins, enter cells through LDL receptor family-associated pathways, and traffic through intracellular compartments. The repository is organized by manuscript figure and panel so that the code, input data, and output associated with each analysis can be readily located.
 
@@ -64,37 +65,50 @@ Any exclusions, manual quality-control decisions, or other changes to the data a
 
 ## Analyses
 
-### Peptide uptake analysis
+### Peptide uptake analysis (Figure 1, panel C-D)
 
 Cellular uptake of fluorescently labeled +CPPs was quantified using flow cytometry and fluorescence microscopy. Analysis scripts were used to import measurements, apply sample annotations, perform background correction or normalization where appropriate, summarize biological replicates, conduct statistical comparisons, and generate plots.
 
 The relevant scripts and source data are provided in the directories corresponding to each manuscript panel.
 
-### LDL receptor analysis
+### Endocytosis inhibitor analysis (Figure 1, panel L)
+
+### 4i (iterative, indirect, immunofluorescent imaging) analysis (Figure 3) (Figure S8-9)
+Multiplexed fluorescence imaging was used to characterize the intracellular localization of selected +CPPs relative to markers of early endosomes, late endosomes, lysosomes, recycling compartments, the Golgi apparatus, autophagic compartments, and other cellular structures.
+
+Cells and peptide-positive puncta were segmented using custom Python workflows. Segmentation masks were manually inspected and corrected where necessary. Marker intensities, spatial overlap, enrichment, and distance-based features were then calculated for individual peptide-positive structures.
+
+### Dimensionality-reduction analyses used for 4i UMAPs (Figure 3, panel E, F, H) (Figure S10)
+
+Dimensionality-reduction analyses, including principal component analysis and UMAP, were used to examine trafficking profiles across peptides and intracellular structures. Peptide fluorescence intensity was used as an annotation or overlay when specified and was not necessarily included as a feature in the embedding itself.
+
+### Endosomal damage and galectin analysis (Figure 3, panel G) (Figure S3)
+
+Galectin enrichment was examined in LAMP1- and RAB7-positive structures to identify compartments associated with membrane damage or repair. Peptide intensity was compared between structures with and without significant GAL3 or GAL8 enrichment.
+
+The applicable object-level and cell-level data, analysis scripts, and statistical results are included in the corresponding figure directories.
+
+### 4i visualizations (Figure 3, Panel B) 
+
+### LDL receptor analysis (Figure 4, Panel G) (Figure S5)
 
 The contribution of the LDL receptor and associated pathways to +CPP uptake was assessed using genetic screening and validation experiments. These analyses include CRISPR interference screening, comparisons between LDLR knockout and overexpression models, and evaluation of peptide uptake across cell populations.
 
 Where applicable, per-cell measurements and biological-replicate summaries are provided with the corresponding figure panels.
 
-### Chemical-inhibitor analysis
+### HDL, VLDL, LDL analysis (Figure 5, panel C) (Figure S6)
 
-The effects of pharmacological perturbations on peptide uptake were analyzed across independent biological replicates. Fluorescence measurements were corrected for drug-associated background when appropriate and normalized to the matched peptide-treated control within each replicate.
+### LDL, all +CPP, analysis (Figure 5, panel E) (Figure S6)
 
-Scripts used for data assembly, normalization, statistical testing, and visualization are supplied with the associated figure panels.
+### Microscale thermophoresis/ Spectral shift analysis (Figure 5, panel F) (Table 7)
 
-### Intracellular trafficking analysis
+### Zeta potential visualization (Figure 5, panel G) 
 
-Multiplexed fluorescence imaging was used to characterize the intracellular localization of selected +CPPs relative to markers of early endosomes, late endosomes, lysosomes, recycling compartments, the Golgi apparatus, autophagic compartments, and other cellular structures.
+### MIC assay analysis (Figure 6, panel A)
 
-Cells and peptide-positive puncta were segmented using custom Python workflows. Segmentation masks were manually inspected and corrected where necessary. Marker intensities, spatial overlap, enrichment, and distance-based features were then calculated for individual peptide-positive structures.
+### Naegleria gruberi morphology and PI staining (Figure 6, panel D-E) (Figure S7)
 
-Dimensionality-reduction analyses, including principal component analysis and UMAP, were used to examine trafficking profiles across peptides and intracellular structures. Peptide fluorescence intensity was used as an annotation or overlay when specified and was not necessarily included as a feature in the embedding itself.
-
-### Endosomal damage and galectin analysis
-
-Galectin enrichment was examined in LAMP1- and RAB7-positive structures to identify compartments associated with membrane damage or repair. Peptide intensity was compared between structures with and without significant GAL3 or GAL8 enrichment.
-
-The applicable object-level and cell-level data, analysis scripts, and statistical results are included in the corresponding figure directories.
+### Cryo-ET data visualization (Figure S6)
 
 ### Image segmentation and quality control
 
