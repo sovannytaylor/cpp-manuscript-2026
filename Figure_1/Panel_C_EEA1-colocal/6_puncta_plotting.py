@@ -1,6 +1,8 @@
 """
 Plot peptide–EEA1 puncta overlap from the Yen-only detection output.
 
+UPDATED FIGURE VERSION: cell n below x-axis, no grid, bold x tick labels.
+
 This script DOES NOT rerun puncta detection and DOES NOT calculate or apply a
 second GP30 floor. The upstream peptide–EEA1 analysis already:
 
@@ -34,6 +36,10 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
 import pandas as pd
+
+# Use Arial throughout the figures and preserve editable SVG text.
+plt.rcParams["font.family"] = "Arial"
+plt.rcParams["svg.fonttype"] = "none"
 
 
 # ============================================================
@@ -140,11 +146,11 @@ Y_LABELS = {
 # FIGURE SETTINGS
 # ============================================================
 
-FIGURE_WIDTH = 15
+FIGURE_WIDTH = 20
 FIGURE_HEIGHT = 7
 
 BAR_WIDTH = 0.65
-VIOLIN_WIDTH = 0.75
+VIOLIN_WIDTH = 1.0
 
 CELL_POINT_SIZE = 18
 REPLICATE_POINT_SIZE = 90
@@ -156,9 +162,23 @@ RANDOM_SEED = 42
 DPI = 300
 SHOW_FIGURES = True
 
+# Text and legend settings
+X_TICK_FONT_SIZE = 20
+Y_TICK_FONT_SIZE = 20
+X_LABEL_FONT_SIZE = 20
+Y_LABEL_FONT_SIZE = 20
+TITLE_FONT_SIZE = 20
+N_LABEL_FONT_SIZE = 18
+LEGEND_FONT_SIZE = 12
+N_LABEL_Y_POSITION = -0.25
+X_LABEL_PADDING = 30
+
+# Change to True to include the plot legend.
+SHOW_LEGEND = False
+
 # Custom salmon-to-burgundy gradient matched to the reference figure. This
 # avoids the pale pink and extremely dark ends of Matplotlib's "Reds" map.
-RED_GRADIENT_LIGHT = "#F47C86"
+RED_GRADIENT_LIGHT = "#FAB3B9"
 RED_GRADIENT_DARK = "#A63D4D"
 CELL_POINT_COLOR = "#4A4A4A"
 MEAN_COLOR = "#000000"
@@ -745,7 +765,7 @@ def add_replicate_points(axis):
             )
 
 def add_n_labels(axis):
-    """Add replicate and cell counts above the plotting area."""
+    """Add cell counts beneath the x-axis categories."""
 
     for x_position, peptide in zip(x_positions, peptide_order):
         row = peptide_summary.loc[
@@ -754,12 +774,12 @@ def add_n_labels(axis):
 
         axis.text(
             x_position,
-            1.01,  # Just above the axes
-            f"N={int(row['n_replicates'])}\nn={int(row['n_cells'])}",
+            N_LABEL_Y_POSITION,
+            f"n={int(row['n_cells'])}",
             transform=axis.get_xaxis_transform(),
             ha="center",
-            va="bottom",
-            fontsize=8,
+            va="top",
+            fontsize=N_LABEL_FONT_SIZE,
             linespacing=1.15,
             clip_on=False,
         )
@@ -768,40 +788,63 @@ def format_axis(axis, title):
     """Apply common formatting to bar and violin plots."""
 
     axis.set_xticks(x_positions)
-    axis.set_xticklabels(peptide_order, rotation=45, ha="right")
-    axis.set_xlabel("Peptide")
-    axis.set_ylabel(Y_LABELS[PRIMARY_OVERLAP_METRIC])
+    axis.set_xticklabels(
+        peptide_order,
+        rotation=45,
+        ha="right",
+        fontsize=X_TICK_FONT_SIZE,
+        fontweight="semibold",
+    )
+    axis.tick_params(axis="y", labelsize=Y_TICK_FONT_SIZE)
+    for label in axis.get_yticklabels():
+        label.set_fontweight("semibold")
+    axis.set_xlabel(
+        "Peptide",
+        fontsize=X_LABEL_FONT_SIZE,
+        labelpad=X_LABEL_PADDING,
+    )
+    axis.set_ylabel(
+        Y_LABELS[PRIMARY_OVERLAP_METRIC],
+        fontsize=Y_LABEL_FONT_SIZE,
+    )
     axis.set_ylim(0, 105)
-    axis.set_title(title, pad=38)
-    axis.spines["top"].set_visible(False)
-    axis.spines["right"].set_visible(False)
-    axis.grid(axis="y", linestyle="--", alpha=0.25, zorder=0)
+    axis.set_title(title, fontsize=TITLE_FONT_SIZE, pad=38)
 
-    axis.scatter(
-        [],
-        [],
-        s=CELL_POINT_SIZE,
-        alpha=0.35,
-        color=CELL_POINT_COLOR,
-        label="Individual cell",
-    )
+    # Draw a complete rectangular black border around the plotting area.
+    for spine in axis.spines.values():
+        spine.set_visible(True)
+        spine.set_color("black")
+        spine.set_linewidth(1.5)
 
-    axis.scatter(
-        [],
-        [],
-        s=REPLICATE_POINT_SIZE,
-        facecolor=MEAN_COLOR,
-        edgecolor="white",
-        linewidth=1.0,
-        label="Replicate mean",
-    )
+    axis.grid(False)
 
-    axis.legend(
-        frameon=False,
-        loc="upper left",
-        bbox_to_anchor=(1.01, 1.0),
-        borderaxespad=0,
-    )
+    if SHOW_LEGEND:
+        axis.scatter(
+            [],
+            [],
+            s=CELL_POINT_SIZE,
+            alpha=0.35,
+            color=CELL_POINT_COLOR,
+            label="Individual cell",
+        )
+
+        axis.scatter(
+            [],
+            [],
+            s=REPLICATE_POINT_SIZE,
+            facecolor=MEAN_COLOR,
+            edgecolor="white",
+            linewidth=1.0,
+            label="Replicate mean",
+        )
+
+        axis.legend(
+            frameon=False,
+            fontsize=LEGEND_FONT_SIZE,
+            loc="upper left",
+            bbox_to_anchor=(1.01, 1.0),
+            borderaxespad=0,
+        )
     add_n_labels(axis)
 
 
@@ -855,7 +898,10 @@ format_axis(
     "Peptide–EEA1 exact overlap + 2 px proximity",
 )
 
-fig.tight_layout(rect=[0, 0, 0.90, 0.94])
+if SHOW_LEGEND:
+    fig.tight_layout(rect=[0, 0, 0.90, 0.94])
+else:
+    fig.tight_layout(rect=[0, 0, 1.0, 0.94])
 save_figure(
     fig,
     "peptide_eea1_exact_plus_2px_barplot",
@@ -947,27 +993,32 @@ format_axis(
     "Distribution of peptide–EEA1 exact overlap + 2 px proximity",
 )
 
-ax.plot(
-    [],
-    [],
-    color=MEAN_COLOR,
-    linewidth=2.0,
-    label="Overall cell mean",
-)
+if SHOW_LEGEND:
+    ax.plot(
+        [],
+        [],
+        color=MEAN_COLOR,
+        linewidth=2.0,
+        label="Overall cell mean",
+    )
 
-handles, labels = ax.get_legend_handles_labels()
-unique_legend = dict(zip(labels, handles))
+    handles, labels = ax.get_legend_handles_labels()
+    unique_legend = dict(zip(labels, handles))
 
-ax.legend(
-    unique_legend.values(),
-    unique_legend.keys(),
-    frameon=False,
-    loc="upper left",
-    bbox_to_anchor=(1.01, 1.0),
-    borderaxespad=0,
-)
+    ax.legend(
+        unique_legend.values(),
+        unique_legend.keys(),
+        frameon=False,
+        fontsize=LEGEND_FONT_SIZE,
+        loc="upper left",
+        bbox_to_anchor=(1.01, 1.0),
+        borderaxespad=0,
+    )
 
-fig.tight_layout(rect=[0, 0, 0.90, 0.94])
+if SHOW_LEGEND:
+    fig.tight_layout(rect=[0, 0, 0.90, 0.94])
+else:
+    fig.tight_layout(rect=[0, 0, 1.0, 0.94])
 save_figure(
     fig,
     "peptide_eea1_exact_plus_2px_violinplot",
